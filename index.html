@@ -2,9 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-
     <title>Juego de adivina tu número</title>
-
     <style>
       html {
         font-family: sans-serif;
@@ -21,97 +19,104 @@
       }
     </style>
   </head>
-
   <body>
-      <h1>Juego Adivina tu número</h1>
+    <h1>Juego Adivina tu número</h1>
+    <p>Hemos seleccionado un número aleatorio entre 1 a 100. Trata de adivinar el número, en un total de 10 turnos o menos. No te preocupes, te diremos si el número es más alto o más bajo.</p>
 
-      <p>Hemos seleccionado un número aleatorío entre 1 a 100. Trata de adivinar el número, en un total de 10 turnos o menos. No te preocupes, te diremos sí el número es más alto o más bajo </p>
+    <div class="form">
+      <label for="guessField">Ingresa el número a adivinar: </label>
+      <input type="text" id="guessField" class="guessField">
+      <input type="submit" value="Ingresar el número" class="guessSubmit">
+    </div>
 
-<div class="form">
-  <label for="guessField">Ingresa el número a adivinar: </label><input type="text" id="guessField" class="guessField">
-  <input type="submit" value="Ingresar el número aleatorio" class="guessSubmit">
-</div>
+    <div class="resultParas">
+      <p class="guesses"></p>
+      <p class="lastResult"></p>
+      <p class="lowOrHi"></p>
+    </div>
 
-<div class="resultParas">
-  <p class="guesses"></p>
-  <p class="lastResult"></p>
-  <p class="lowOrHi"></p>
-</div>
+    <script>
+      let randomNumber = Math.floor(Math.random() * 100) + 1; 
+      const ATTEMPS = 10;
+      const guesses = document.querySelector('.guesses');
+      const lastResult = document.querySelector('.lastResult');
+      const lowOrHi = document.querySelector('.lowOrHi');
+      const guessSubmit = document.querySelector('.guessSubmit');
+      const guessField = document.querySelector('.guessField');
 
-</body>
+      let guessCount = 1;
+      let resetButton;
 
-<script>
-  let randomNumber = Math.random() * 10;
+      function checkGuess() {
+        let userGuess = guessField.value.trim(); 
+        if (userGuess === '' || isNaN(userGuess) || userGuess.includes('.') || userGuess < 1 || userGuess > 100) {
 
-  const ATTEMPS = 5;
-  const guesses = document.querySelector('.guesses');
-  const lastResult = document.querySelector('.lastResult');
-  const lowOrHi = document.querySelector('lowOrHi');
-  const guessSubmit = document.querySelector('.guessSubmit');
-  const guessField = document.querySelector('.guessField');
+          alert("Por favor, ingresa un número entero entre 1 y 100.");
+          return;
+        }
 
-  let guessCount = 1;
-  let resetButton;
+        userGuess = parseInt(userGuess); 
 
-  function checkGuess() {
+        if (guessCount === 1) {
+          guesses.textContent = 'Intentos previos: ';
+        }
+        guesses.textContent += userGuess + ' ';
 
-    let userGuess = guessField.value;
-    if(guessCount === 1) {
-      guesses.textContent = 'Número aleatorio anterior: ';
-    }
-    guesses.textContent += userGuess + ' ';
+        if (userGuess === randomNumber) {
 
-    if(userGuess === randomNumber) {
-      lastResult.textContent = '!!!Pérdistes!!!';
-      lastResult.style.backgroundColor = 'black';
-      lowOrHi.textContent = '';
-      setGameOver();
-    } else if(guessCount === ATTEMPS) {
-      lastResult.textContent = 'Felicitaciones! adivinaste el número!';
-      lastResult.style.backgroundColor = 'red';
-      setGameOver();
-    } else {
-      lastResult.textContent = 'Incorrecto! ';
-      lastResult.style.backgroundColor = 'green';
-      if(userGuess < randomNumber) {
-        lowOrHi.textContent = 'El número es mayor!';
-      } else if(userGuess > randomNumber) {
-        lowOrHi.textContent = 'El número es menor!';
+          lastResult.textContent = 'Felicitaciones! Adivinaste el número!';
+          lastResult.style.color = 'green';
+          lowOrHi.textContent = '';
+          setGameOver();
+        } else if (guessCount === ATTEMPS) {
+
+          lastResult.textContent = '!!!Perdiste!!!';
+          lastResult.style.color = 'red';
+          setGameOver();
+        } else {
+
+          lastResult.textContent = 'Incorrecto!';
+          lastResult.style.color = 'black';
+          if (userGuess < randomNumber) {
+            lowOrHi.textContent = 'El número es mayor!';
+          } else {
+            lowOrHi.textContent = 'El número es menor!';
+          }
+        }
+
+        guessCount++;
+        guessField.value = '';
+        guessField.focus();
       }
-    }
 
-    guessCount++;
-    guessField.value = '';
-    guessField.focus();
-  }
-  guessSubmit.addeventListener('click', checkGuess);
+      guessSubmit.addEventListener('click', checkGuess);
 
-  function setGameOver() {
-	  guessField.disabled = true;
-	  guessSubmit.disabled = true;
-	  resetButton = document.createElement('button');
-	  resetButton.textContent = 'Comienza un nuevo juego';
-	  document.body.appendChild(resetButton);
-	  resetButton.addeventListener('click', resetGame);
-  }
+      function setGameOver() {
+        guessField.disabled = true;
+        guessSubmit.disabled = true;
+        resetButton = document.createElement('button');
+        resetButton.textContent = 'Comenzar un nuevo juego';
+        document.body.appendChild(resetButton);
+        resetButton.addEventListener('click', resetGame);
+      }
 
-  function resetGame() {
-	  guessCount = 1;
+      function resetGame() {
+        guessCount = 1;
 
-	  const resetParas = document.querySelectorAll('.resultParas p');
-	  for(let i = 0; i < resetParas.length; i++) {
-		  resetParas[i].textContent = '';
-	  }
-	  resetButton.parentNode.removeChild(resetButton);
+        const resetParas = document.querySelectorAll('.resultParas p');
+        resetParas.forEach(p => p.textContent = '');
 
-	  guessField.disabled = false;
-	  guessSubmit.disabled = false;
-	  guessField.value = '';
-	  guessField.focus();
+        resetButton.parentNode.removeChild(resetButton);
 
-	  lastResult.style.backgroundColor = 'white';
+        guessField.disabled = false;
+        guessSubmit.disabled = false;
+        guessField.value = '';
+        guessField.focus();
 
-	  randomNumber = Math.floor(Math.random()) + 1;
-  }
-</script>
+        lastResult.style.color = 'black';
+
+        randomNumber = Math.floor(Math.random() * 100) + 1;
+      }
+    </script>
+  </body>
 </html>
