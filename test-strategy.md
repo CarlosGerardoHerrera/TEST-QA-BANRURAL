@@ -61,10 +61,10 @@ Se cambió el mensaje a algo más adecuado y claro: `'Felicitaciones! adivinaste
 En los `eventListener` había un error tipográfico. Se estaba utilizando `addeventListener` en lugar de `addEventListener`, lo que causaba que no funcionaran correctamente.  
 **Solución:**  
 Se corrigió la escritura de los `eventListener` para que funcionaran correctamente:
-```javascript
+```javascript```
 guessSubmit.addEventListener('click', checkGuess);
 resetButton.addEventListener('click', resetGame);
- 
+
 ---
 
 ## Error 9: Generación incorrecta de un nuevo número aleatorio al reiniciar el juego
@@ -74,5 +74,5 @@ Al reiniciar el juego, la generación del número aleatorio no estaba funcionand
 
 **Solución:**  
 Se corrigió el código para generar un número aleatorio válido entre 1 y 100 utilizando:  
-```javascript
+```javascript```
 randomNumber = Math.floor(Math.random() * 100) + 1;
